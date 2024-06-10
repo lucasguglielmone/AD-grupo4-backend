@@ -16,7 +16,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
+            //'password' => 'required|string|min:6',
         ]);
 
         if ($validator->fails()) {
@@ -26,8 +26,10 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->name),
         ]);
+
+        // Agregar: mandar email con la password
 
         $token = $user->createToken('Laravel Password Grant Client')->accessToken;
 
@@ -51,5 +53,10 @@ class AuthController extends Controller
     {
         $request->user()->token()->revoke();
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function test()
+    {
+        return response()->json(['message' => 'OK!']);
     }
 }
